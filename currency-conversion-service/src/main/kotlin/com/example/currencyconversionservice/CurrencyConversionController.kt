@@ -12,13 +12,12 @@ import org.springframework.web.client.getForEntity
 @RestController
 class CurrencyConversionController {
 
+    @Autowired
+    private var proxy: CurrencyExchangeServiceProxy? = null
+
     @GetMapping("currency-converter/from/{from}/to/{to}/quantity/{quantity}")
-    fun getCurrencyConversion(@PathVariable from: String, @PathVariable to: String, @PathVariable quantity: Int): CurrencyConversion {
-
-        val responseEntity: ResponseEntity<CurrencyConversion> = RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/USD/to/INR",
-                CurrencyConversion::javaClass)
-
-        val currencyConversion = responseEntity.body!!
+    fun getCurrencyConversionFeign(@PathVariable from: String, @PathVariable to: String, @PathVariable quantity: Int): CurrencyConversion {
+        val currencyConversion = proxy!!.getCurrencyExchange(from, to)
         currencyConversion.quantity = quantity.toBigDecimal()
         currencyConversion.totalCalculatedAmount = currencyConversion.value*currencyConversion.quantity!!
         return currencyConversion
