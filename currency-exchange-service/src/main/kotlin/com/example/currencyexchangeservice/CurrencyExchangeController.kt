@@ -20,6 +20,7 @@ class CurrencyExchangeController {
         val exchangeValue = repository!!.findByFromAndTo(from, to)
 
         exchangeValue.port = environment!!.getProperty("local.server.port")!!.toInt()
+        Thread.sleep(1000)
         return exchangeValue
     }
 }
